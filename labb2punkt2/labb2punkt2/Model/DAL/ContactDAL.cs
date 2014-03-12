@@ -6,14 +6,30 @@ using System.Data;
 using System.Web;
 using System.Web.Configuration;
 using labb2punkt2.Model;
+using labb2punkt2.Model.DAL;
 
 namespace labb2punkt2.Model.DAL
 {
-    public class ContactDAL
+    public class ContactDAL : DALBase
     {
-        public IEnumerable<Contact> GetContatcs()
+        public void DeleteContact(Contact contact)
         {
-            string connectionString = WebConfigurationManager.ConnectionStrings["1dv409_AdventureWorksAssignmentConnectionString"].ConnectionString;
+            // kod
+        }
+
+        public void DeleteContact(int contactId)
+        {
+            // kod
+        }
+
+        public Contact GetContact(int contactId)
+        {
+            throw new NotImplementedException(); // bara för stomme s det inte blir rött
+        }
+
+        public IEnumerable<Contact> GetContacts()
+        {
+           // string connectionString = WebConfigurationManager.ConnectionStrings["1dv409_AdventureWorksAssignmentConnectionString"].ConnectionString;
             // anslutningssträngen
 
             using (var conn = new SqlConnection(connectionString))  // å
@@ -54,11 +70,18 @@ namespace labb2punkt2.Model.DAL
                 return contacts;
 
             }
+        }
+
+        public IEnumerable<Contact> GetContactsPageWise(int maximumRows, int startRowIndex, out int totalRowCount)
+        {
+            throw new NotImplementedException(); // bara för stomme s det inte blir rött
+        }
 
 
+        // throw new NotImplementedException(); // bara för stomme s det inte blir rött
 
-
-            // throw new NotImplementedException(); // bara för stomme s det inte blir rött
+        public void SaveContact(Contact contact)
+        {
         }
 
     }
