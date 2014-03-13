@@ -22,27 +22,39 @@ namespace labb2punkt2.Model.DAL
         {
             using (var conn = CreateConnection())  // å
             {
-                var cmd = new SqlCommand("Person.uspGetContacts", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                conn.Open();  // ska inte vara öppen mer än vad som behövs, därför läggs den in här senare. 
-
-                using (var reader = cmd.ExecuteReader())
+                try
                 {
-                    var contactIdIndex = reader.GetOrdinal("ContactID"); // ger tillbaka ett heltal där ContactId finns
-                    var firstNameIndex = reader.GetOrdinal("FirstName");
-                    var lastNameIndex = reader.GetOrdinal("LastName");
-                    var emailIndex = reader.GetOrdinal("EmailAddress");
-                    if (reader.Read())
+                    var cmd = new SqlCommand("Person.uspGetContact", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@ContactID", SqlDbType.Int, 4).Value = contactId;
+
+                    conn.Open();  // ska inte vara öppen mer än vad som behövs, därför läggs den in här senare. 
+
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        return (new Contact
+                        var contactIdIndex = reader.GetOrdinal("ContactID"); // ger tillbaka ett heltal där ContactId finns
+                        var firstNameIndex = reader.GetOrdinal("FirstName");
+                        var lastNameIndex = reader.GetOrdinal("LastName");
+                        var emailIndex = reader.GetOrdinal("EmailAddress");
+                        if (reader.Read())
                         {
-                            ContactId = reader.GetInt32(contactIdIndex),
-                            FirstName = reader.GetString(firstNameIndex),
-                            LastName = reader.GetString(lastNameIndex),
-                            EmailAddress = reader.GetString(firstNameIndex)
-                        });
+                            return new Contact
+                            {
+                                ContactId = reader.GetInt32(contactIdIndex),
+                                FirstName = reader.GetString(firstNameIndex),
+                                LastName = reader.GetString(lastNameIndex),
+                                EmailAddress = reader.GetString(firstNameIndex)
+                            };
+                        }
                     }
+
+                    return null;
+                }
+
+                catch
+                {
+                    throw new ApplicationException("Det gick inte att hämta ut kontakt från databasen");
                 }
             }
         }
@@ -62,7 +74,7 @@ namespace labb2punkt2.Model.DAL
 
                     using (var reader = cmd.ExecuteReader())
                     {
-                        var contactIdIndex = reader.GetOrdinal("ContactID"); // ger tillbaka ett heltal där ContactId finns
+                        var contactIdIndex = reader.GetOrdinal("ContactID"); 
                         var firstNameIndex = reader.GetOrdinal("FirstName");
                         var lastNameIndex = reader.GetOrdinal("LastName");
                         var emailIndex = reader.GetOrdinal("EmailAddress");
@@ -75,13 +87,9 @@ namespace labb2punkt2.Model.DAL
                                 FirstName = reader.GetString(firstNameIndex),
                                 LastName = reader.GetString(lastNameIndex),
                                 EmailAddress = reader.GetString(firstNameIndex)
-
                             });
                         }
-
                         contacts.TrimExcess(); // krymper till det faktiskta antalet element som är utnyttjat 
-
-
                     }
 
                     return contacts;
@@ -89,7 +97,7 @@ namespace labb2punkt2.Model.DAL
                 }
                 catch
                 {
-                    throw new ArgumentException("Det gick inte att hämta ut kontakterna");
+                    throw new ApplicationException("Det gick inte att hämta ut kontakterna från databasen");
                 }
             }
         }
@@ -101,20 +109,65 @@ namespace labb2punkt2.Model.DAL
 
         public void InsertContact(Contact contact)
         {
-            throw new NotImplementedException();
+            using (var conn = CreateConnection())  
+            {
+                try
+                {
+                    var cmd = new SqlCommand("Person.uspAddContact", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@FirstName", SqlDbType.VarChar, 50).Value = contact.FirstName;
+                    cmd.Parameters.Add("@LastName", SqlDbType.VarChar, 50).Value = contact.LastName;
+                    cmd.Parameters.Add("@EmailAdress", SqlDbType.VarChar, 50).Value = contact.EmailAddress;
+
+                    cmd.Parameters.Add("@ContactID", SqlDbType.Int, 4).Direction = ParameterDirection.Output;
+                    conn.Open();  // ska inte vara öppen mer än vad som behövs, därför läggs den in här senare. 
+
+                   //ExecuteNonQuery används för att exekvera den lp. 
+                    cmd.ExecuteNonQuery();
+
+                    contact.ContactId = (int)cmd.Parameters["@ContactID"].Value;
+                }
+
+                catch
+                {
+                    throw new ApplicationException("Det gick inte att lägga till kontakt i databasen");
+                }
+            }
         }
 
         public void UpdateContact(Contact contact)
         {
-            throw new NotImplementedException();
+            using (var conn = CreateConnection())  // å
+            {
+                try
+                {
+                    var cmd = new SqlCommand("Person.uspUpdateContact", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@FirstName", SqlDbType.VarChar, 50).Value = contact.FirstName;
+                    cmd.Parameters.Add("@LastName", SqlDbType.VarChar, 50).Value = contact.LastName;
+                    cmd.Parameters.Add("@EmailAdress", SqlDbType.VarChar, 50).Value = contact.EmailAddress;
+
+                    cmd.Parameters.Add("@ContactID", SqlDbType.Int, 4).Direction = ParameterDirection.Output;
+                    conn.Open();  // ska inte vara öppen mer än vad som behövs, därför läggs den in här senare. 
+
+                    //ExecuteNonQuery används för att exekvera den lp. 
+                    cmd.ExecuteNonQuery();
+
+                    contact.ContactId = (int)cmd.Parameters["@ContactID"].Value;
+                }
+
+                catch
+                {
+                    throw new ApplicationException("Det gick inte att uppdatera kontakt i databasen");
+                }
+            }
         }
 
         // throw new NotImplementedException(); // bara för stomme s det inte blir rött
 
-        public void SaveContact(Contact contact)
-        {
-            throw new NotImplementedException();
-        }
+       
 
     }
 }

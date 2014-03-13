@@ -18,7 +18,7 @@ namespace labb2punkt2.Model
 
         public void DeleteContact(Contact contact)
         {
-            // kod
+            ContactDAL.InsertContact(contact);
         }
 
         public void DeleteContact(int contactId)
@@ -31,17 +31,6 @@ namespace labb2punkt2.Model
             return ContactDAL.GetContactById(contactId);
         }
 
-     /*     Metoden Save används både då en ny kontaktuppgift ska läggas till i tabellen Contact och då en 
-            befintlig kontaktuppgift ska uppdateras. Genom att undersöka värdet egenskapen ContactId har för 
-            Contact-objektet kan det bestämmas om det är fråga om en helt ny post, eller en uppdatering. Har 
-            ContactId värdet 0 (standardvärdet för fält av typen int) är det en ny post. Är värdet större än 0 
-            måste det vara en befintlig post som ska uppdateras.
-            Innan en post skapas eller uppdateras måste Contact-objektet valideras. Misslyckas valideringen ska 
-            ett undantag av typen ApplicationException kastas. Genom egenskapen Data i klassen 
-            ApplicationException och metoden Add kan en referens till samlingen med valideringsresultat
-            skickas med undantaget, som tas omhand och behandlas i presentationslogiklagret.*/
-
-
         public IEnumerable<Contact> GetContacts()
         {
             return ContactDAL.GetContacts();
@@ -50,14 +39,41 @@ namespace labb2punkt2.Model
 
         public IEnumerable<Contact> GetContactsPageWise(int maximumRows, int startRowIndex, out int totalRowCount)
         {
-            throw new NotImplementedException(); // bara för stomme s det inte blir rött
+            throw new NotImplementedException(); 
         }
 
-
-        // throw new NotImplementedException(); // bara för stomme s det inte blir rött
 
         public void SaveContact(Contact contact)
         {
+            try
+            {
+                if (contact.ContactId >= 0)
+                {
+
+                    if (contact.ContactId == 0)
+                    {
+                        ContactDAL.InsertContact(contact);
+                    }
+
+                    if (contact.ContactId > 0)
+                    {
+                        ContactDAL.UpdateContact(contact);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Värdet måste vara större eller lika med 0");
+                }
+            }
+            catch
+            {
+                throw new ApplicationException("Det uppstod ett fel vid uppdatering/tillägg av kund");
+            }
         }
+
+        /*    
+            Genom egenskapen Data i klassen 
+           ApplicationException och metoden Add kan en referens till samlingen med valideringsresultat
+           skickas med undantaget, som tas omhand och behandlas i presentationslogiklagret.*/
     }
 }
