@@ -10,17 +10,14 @@ namespace labb2punkt2.Model.DAL
 {
     public abstract class DALBase
     {
-        private string _connectionString;
+        private static readonly string _connectionString;
 
         protected SqlConnection CreateConnection()
         {
-            using (var conn = new SqlConnection(_connectionString))  // å
-            {
-                return conn;
-            }
+            return new SqlConnection(_connectionString);
         }
 
-        private DALBase()
+        protected static DALBase()
         {
             _connectionString = WebConfigurationManager.ConnectionStrings["1dv409_AdventureWorksAssignmentConnectionString"].ConnectionString;
         }
