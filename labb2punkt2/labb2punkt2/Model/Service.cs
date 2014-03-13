@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using labb2punkt2.Model;
 using labb2punkt2.Model.DAL;
+using System.ComponentModel.DataAnnotations;
 
 namespace labb2punkt2.Model
 {
@@ -18,12 +19,12 @@ namespace labb2punkt2.Model
 
         public void DeleteContact(Contact contact)
         {
-            ContactDAL.InsertContact(contact);
+            //kod
         }
 
         public void DeleteContact(int contactId)
         {
-            // kod
+            ContactDAL.DeleteContact(contactId);
         }
 
         public Contact GetContact(int contactId)
@@ -37,14 +38,24 @@ namespace labb2punkt2.Model
 
         }
 
-        public IEnumerable<Contact> GetContactsPageWise(int maximumRows, int startRowIndex, out int totalRowCount)
+        public IEnumerable<Contact> GetContactsPageWise(int startRowIndex, int maximumRows, out int totalRowCount)
         {
-            throw new NotImplementedException(); 
+            return ContactDAL.GetContactsPageWise(startRowIndex, maximumRows, out totalRowCount);
         }
 
 
         public void SaveContact(Contact contact)
         {
+            var validationContext = new ValidationContext(contact);
+            var validationResults = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(contact, validationContext, validationResults, true))
+            {
+                var ex = new ValidationException("Objektet klarade inte valideringen");
+                ex.Data.Add("ValidationResults", validationResults);
+                throw ex;
+            }
+
             try
             {
                 if (contact.ContactId >= 0)
@@ -55,14 +66,15 @@ namespace labb2punkt2.Model
                         ContactDAL.InsertContact(contact);
                     }
 
-                    if (contact.ContactId > 0)
+                    else
                     {
                         ContactDAL.UpdateContact(contact);
                     }
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException("Värdet måste vara större eller lika med 0");
+                   // throw new ArgumentOutOfRangeException("Värdet måste vara större eller lika med 0");
+                    throw new ApplicationException("Det uppstod ett fel vid uppdatering/tillägg av kund");
                 }
             }
             catch

@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Configuration;
 using labb2punkt2.Model;
 using labb2punkt2.Model.DAL;
+using System.ComponentModel.DataAnnotations;
 
 namespace labb2punkt2.Model.DAL
 {
@@ -15,7 +16,26 @@ namespace labb2punkt2.Model.DAL
 
         public void DeleteContact(int contactId)
         {
-            // kod
+            using (var conn = CreateConnection()) 
+            {
+                try
+                {
+                    var cmd = new SqlCommand("Person.uspRemoveContact", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@ContactID", SqlDbType.Int, 4).Value = contactId;
+
+                    conn.Open(); 
+
+                    cmd.ExecuteNonQuery();
+
+                }
+
+                catch
+                {
+                    throw new ApplicationException("Det gick inte att uppdatera kontakt i databasen");
+                }
+            }
         }
 
         public Contact GetContactById(int contactId)
@@ -104,7 +124,8 @@ namespace labb2punkt2.Model.DAL
 
         public IEnumerable<Contact> GetContactsPageWise(int maximumRows, int startRowIndex, out int totalRowCount)
         {
-            throw new NotImplementedException(); // bara för stomme s det inte blir rött
+            totalRowCount = GetContacts().Count();
+            return GetContacts().Skip(startRowIndex).Take(maximumRows);
         }
 
         public void InsertContact(Contact contact)

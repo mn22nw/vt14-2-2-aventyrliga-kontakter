@@ -17,7 +17,7 @@ namespace labb2punkt2.Model.DAL
             return new SqlConnection(_connectionString);
         }
 
-        protected static DALBase()
+        static DALBase()
         {
             _connectionString = WebConfigurationManager.ConnectionStrings["1dv409_AdventureWorksAssignmentConnectionString"].ConnectionString;
         }
