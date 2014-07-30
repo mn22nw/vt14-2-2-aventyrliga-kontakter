@@ -45,7 +45,7 @@ namespace sistalabben.Pages.ContactPages
             try
             {
                 Service.DeleteContact(contactId);
-                Page.SetTempData("SuccessMessage", "Kunden deletades.");
+                Page.SetTempData("SuccessMessage", "Kunden togs bort.");
                 Response.RedirectToRoute("ContactListing");
                 Context.ApplicationInstance.CompleteRequest();
             }

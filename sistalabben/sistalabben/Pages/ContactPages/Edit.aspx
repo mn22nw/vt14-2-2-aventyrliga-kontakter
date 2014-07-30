@@ -30,19 +30,28 @@
             <label for="Name">Namn</label>
         </div>
         <div class="editor-field">
-            <asp:TextBox ID="Name" runat="server" Text="<%# BindItem.FirstName %>"></asp:TextBox>
+            <asp:TextBox ID="Name" runat="server" MaxLength="50" Text="<%# BindItem.FirstName %>"></asp:TextBox>
+            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                ErrorMessage="Ett förnamn måste anges." ControlToValidate="Name" Display="Dynamic"></asp:RequiredFieldValidator>
         </div>
         <div class="editor-label">
             <label for="LastName">Efternamn</label>
         </div>
         <div class="editor-field">
-            <asp:TextBox ID="LastName" runat="server" Text="<%# BindItem.LastName %>"></asp:TextBox>
+            <asp:TextBox ID="LastName" runat="server" MaxLength="50" Text="<%# BindItem.LastName %>"></asp:TextBox>
+          <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                ErrorMessage="Ett efternamn måste anges." ControlToValidate="LastName" Display="None"></asp:RequiredFieldValidator>
         </div>
         <div class="editor-label">
             <label for="Email">Email</label>
         </div>
         <div class="editor-field">
-            <asp:TextBox ID="Email" runat="server" Text="<%# BindItem.EmailAddress %>"></asp:TextBox>
+            <asp:TextBox ID="Email" runat="server" MaxLength="50" Text="<%# BindItem.EmailAddress %>"></asp:TextBox>
+              <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
+                ErrorMessage="Email-fältet får ej lämnas tomt." ControlToValidate="Email" Display="None"></asp:RequiredFieldValidator>
+            <asp:RegularExpressionValidator ID="RegularExpressionValidator2" 
+                 runat="server" ErrorMessage="Emailadressen verkar inte vara rätt formaterad." 
+                Display="None" ControlToValidate="Email" ValidationExpression='^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$'></asp:RegularExpressionValidator>
         </div>
              <br />
              <asp:LinkButton ID="LinkButton2"  runat="server" CommandName="Update" Text="SPARA" CssClass="nyKund" />
