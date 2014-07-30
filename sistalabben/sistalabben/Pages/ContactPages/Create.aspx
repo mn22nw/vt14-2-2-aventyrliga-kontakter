@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Create.aspx.cs" Inherits="sistalabben.Pages.ContactPages.Create" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Create.aspx.cs" Inherits="sistalabben.Pages.ContactPages.Create" ViewStateMode="Disabled" %>
 
 <!DOCTYPE html>
 

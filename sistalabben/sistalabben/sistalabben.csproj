@@ -62,7 +62,6 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Pages\ContactPages\Create.aspx" />
-    <Content Include="Pages\ContactPages\Delete.aspx" />
     <Content Include="Pages\ContactPages\Edit.aspx" />
     <Content Include="Pages\ContactPages\Listing.aspx" />
     <Content Include="Pages\Shared\Error.aspx" />
@@ -90,13 +89,6 @@
     </Compile>
     <Compile Include="Pages\ContactPages\Create.aspx.designer.cs">
       <DependentUpon>Create.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ContactPages\Delete.aspx.cs">
-      <DependentUpon>Delete.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\ContactPages\Delete.aspx.designer.cs">
-      <DependentUpon>Delete.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\ContactPages\Edit.aspx.cs">
       <DependentUpon>Edit.aspx</DependentUpon>
